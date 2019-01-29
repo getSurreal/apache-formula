@@ -28,6 +28,8 @@
     'Timeout': site.get('Timeout'),
     'LimitRequestFields': site.get('LimitRequestFields'),
 
+    'AdditionalDirectives': site.get('AdditionalDirectives'),
+
     'Directory_default': site.get('DocumentRoot', '{0}/{1}'.format(map.wwwdir, sitename)),
     'Directory': {
         'Options': '-Indexes +FollowSymLinks',
@@ -69,13 +71,17 @@
     {% if site.get('SSLCertificateKeyFile') %}SSLCertificateKeyFile {{ site.SSLCertificateKeyFile }}{% endif %}
     {% if site.get('SSLCertificateChainFile') %}SSLCertificateChainFile {{ site.SSLCertificateChainFile}}{% endif %}
     {% endif %}
-    
+
     {% if site.get('Rewrite') %}RewriteEngine on
     {{ site.Rewrite }}
     {%  endif %}
 
     {%- for loc, path in site.get('Alias', {}).items() %}
     Alias {{ loc }} {{ path }}
+    {%- endfor %}
+
+    {%- for directive in AdditionalDirectives %}
+    {{ directive }}
     {%- endfor %}
 
     {%- for path, dir in site.get('Directory', {}).items() -%}
